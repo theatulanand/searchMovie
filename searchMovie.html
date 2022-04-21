@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        body {
+            background-image: url("https://www.mytemplatestorage.com/wp-content/uploads/2017/04/2.jpg");
+        }
+
+        #container {
+            width: 70%;
+            margin: auto;
+            display: flex;
+            flex-wrap: wrap;
+            padding: 5%;
+        }
+
+        #left {
+            width: 40%;
+            margin: auto;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        #right {
+            width: 40%;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            margin: auto;
+            height: 400px;
+        }
+
+        #left input {
+            padding: 10px;
+            width: 80%;
+            margin: auto;
+            font-size: 15px;
+            border: 3px solid black;
+            border-radius: 5px;
+            font-weight: 400;
+            font-size: 18px;
+        }
+
+        #left button {
+            padding: 10px;
+            width: 86%;
+            margin: auto;
+            font-size: 18px;
+            margin-top: 20px;
+            background-color: green;
+            color: white;
+            font-weight: 500;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        }
+
+        button:active {
+            transform: translateY(4px);
+        }
+
+        #details {
+            border: 5px solid green;
+            height: 200px;
+            padding: 20px;
+            width: 75%;
+            border-radius: 10px;
+            background: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <div id="left">
+            <div>
+                <input type="text" id="name" placeholder="Movie Name">
+                <button onclick="getData()">Search</button>
+            </div>
+            <div id="details">
+                <h2 style="text-align: center; color: green;" id="movieName">Movie Name</h2>
+                <h3>Year&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <span id=year> </span></h3>
+                <h3>Rating &nbsp;| <span id=rating> </span></h3>
+                <h3>Type&nbsp;&nbsp;&nbsp;&nbsp; | <span id=type> </span></h3>
+            </div>
+        </div>
+        <div id="right">
+            <img id="poster" style="width: 100%; height: 100%;"
+                src="https://media.istockphoto.com/vectors/cinema-poster-with-cola-filmstrip-and-clapper-vector-vector-id1244034031?k=20&m=1244034031&s=612x612&w=0&h=WFpMBZ7PfLCJrK4F9764OsAls0NbOJOza8CIiP3Yfc8="
+                alt="N/A">
+
+                <p style="background-color: blue; margin-top: -8px; font-size: 30px; color: white; text-align: center; padding: 2px;" id = "reco"></p>
+        </div>
+    </div>
+</body>
+<script>
+
+
+    function getData() {
+        var name = document.getElementById('name').value;
+        fetch(`https://www.omdbapi.com/?t=${name}&apikey=c5c0956d`)
+            .then(function (res) {
+                res.json().then(function (res) {
+                    if (res.Response == "False") {
+                        showError();
+                    } else {
+                        showData(res);
+                    }
+                })
+            }).catch(function (err) {
+                console.log("error");
+            })
+    }
+
+    function showData(data) {
+
+        var movieName = document.getElementById("movieName");
+        movieName.innerHTML = data.Title;
+
+        var year = document.getElementById("year");
+        year.innerHTML = data.Year;
+
+        var type = document.getElementById("type");
+        type.innerHTML = data.Type;
+
+        var rating = document.getElementById("rating");
+        rating.innerHTML = data.imdbRating;
+
+        var poster = document.getElementById("poster");
+        poster.src = data.Poster;
+
+
+        var reco = document.getElementById("reco");
+
+        if(Number(data.imdbRating) > 8){
+            reco.innerText = "RECOMMENDED"
+        }else{
+            reco.innerText = "";
+        }
+
+        console.log(data);
+    }
+
+    function showError() {
+        var poster = document.getElementById("poster");
+        poster.src = "https://c.tenor.com/xA-2d4VEHGMAAAAM/it-does-not-exist-data.gif";
+
+        var movieName = document.getElementById("movieName");
+        movieName.innerHTML = "Not Found !";
+
+        var year = document.getElementById("year");
+        year.innerHTML = "Not Found !";
+
+        var type = document.getElementById("type");
+        type.innerHTML = "Not Found !";
+
+        var rating = document.getElementById("rating");
+        rating.innerHTML = "Not Found !";
+    }
+
+</script>
+
+</html>
